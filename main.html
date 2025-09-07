@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 8px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 20px;
+            outline: none;
+            width: 250px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #3498db;
+        }
+
+        .category-filter {
+            background: white;
+            padding: 20px 0;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .category-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-btn {
+            padding: 8px 20px;
+            border: 2px solid #e1e8ed;
+            background: white;
+            color: #555;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .category-btn:hover {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .category-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        main {
+            padding: 40px 0;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #f0f0f0;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 300;
+        }
+
+        .post-content {
+            padding: 24px;
+        }
+
+        .post-category {
+            display: inline-block;
+            background: #f8f9fa;
+            color: #6c757d;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .post-excerpt {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .post-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .read-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .no-posts {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-posts-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        footer {
+            background: white;
+            border-top: 1px solid #e1e8ed;
+            padding: 40px 0;
+            margin-top: 60px;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .category-buttons {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .posts-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* 카테고리별 색상 */
+        .category-ai { border-left: 4px solid #e74c3c; }
+        .category-game { border-left: 4px solid #2ecc71; }
+        .category-web { border-left: 4px solid #3498db; }
+        .category-mobile { border-left: 4px solid #f39c12; }
+        .category-etc { border-left: 4px solid #9b59b6; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">Tech Blog</a>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="글 제목이나 내용을 검색하세요..." id="searchInput">
+                </div>
+            </div>
+        </div>
+        <div class="category-filter">
+            <div class="container">
+                <div class="category-buttons">
+                    <button class="category-btn active" data-category="all">전체</button>
+                    <button class="category-btn" data-category="ai">AI</button>
+                    <button class="category-btn" data-category="game">게임 제작</button>
+                    <button class="category-btn" data-category="web">웹 개발</button>
+                    <button class="category-btn" data-category="mobile">모바일</button>
+                    <button class="category-btn" data-category="etc">기타</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="posts-grid" id="postsGrid">
+                <!-- 샘플 포스트들 -->
+            </div>
+            <div class="no-posts" id="noPosts" style="display: none;">
+                <div class="no-posts-icon">📝</div>
+                <h3>검색 결과가 없습니다</h3>
+                <p>다른 검색어나 카테고리를 시도해보세요.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Tech Blog. Made with ❤️ for sharing knowledge.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 샘플 데이터
+        const posts = [
+            {
+                id: 1,
+                title: "머신러닝으로 게임 AI 만들기",
+                excerpt: "Unity와 ML-Agents를 활용해서 간단한 게임 AI를 구현하는 방법을 알아봅시다. 강화학습의 기본 개념부터 실제 구현까지 단계별로 설명합니다.",
+                category: "ai",
+                date: "2024-03-15",
+                readTime: "8분",
+                icon: "🤖"
+            },
+            {
+                id: 2,
+                title: "Unity 2D 플랫포머 게임 제작 가이드",
+                excerpt: "처음부터 끝까지 Unity로 2D 플랫포머 게임을 만드는 과정을 상세히 다룹니다. 캐릭터 움직임, 충돌 처리, 레벨 디자인까지 모든 것을 포함합니다.",
+                category: "game",
+                date: "2024-03-10",
+                readTime: "12분",
+                icon: "🎮"
+            },
+            {
+                id: 3,
+                title: "React와 Node.js로 실시간 채팅 앱 만들기",
+                excerpt: "Socket.io를 활용해서 실시간 채팅 애플리케이션을 구축하는 방법을 알아봅시다. 프론트엔드와 백엔드 구현을 모두 다룹니다.",
+                category: "web",
+                date: "2024-03-08",
+                readTime: "15분",
+                icon: "💬"
+            },
+            {
+                id: 4,
+                title: "ChatGPT API로 개인 비서 만들기",
+                excerpt: "OpenAI의 GPT API를 활용해서 나만의 AI 비서를 만드는 프로젝트입니다. API 사용법부터 고급 프롬프트 엔지니어링까지 다룹니다.",
+                category: "ai",
+                date: "2024-03-05",
+                readTime: "10분",
+                icon: "🧠"
+            },
+            {
+                id: 5,
+                title: "Flutter로 크로스 플랫폼 앱 개발하기",
+                excerpt: "하나의 코드베이스로 iOS와 Android 앱을 동시에 개발하는 Flutter 프레임워크의 기본부터 고급 기능까지 알아봅시다.",
+                category: "mobile",
+                date: "2024-03-01",
+                readTime: "20분",
+                icon: "📱"
+            },
+            {
+                id: 6,
+                title: "게임 개발자를 위한 Git 워크플로우",
+                excerpt: "게임 프로젝트에서 효과적으로 Git을 사용하는 방법을 알아봅시다. 대용량 파일 관리, 브랜치 전략, 팀 협업 팁을 포함합니다.",
+                category: "etc",
+                date: "2024-02-28",
+                readTime: "7분",
+                icon: "🔧"
+            }
+        ];
+
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        function renderPosts() {
+            const postsGrid = document.getElementById('postsGrid');
+            const noPosts = document.getElementById('noPosts');
+            
+            let filteredPosts = posts;
+
+            // 카테고리 필터링
+            if (currentCategory !== 'all') {
+                filteredPosts = filteredPosts.filter(post => post.category === currentCategory);
+            }
+
+            // 검색 필터링
+            if (currentSearch) {
+                filteredPosts = filteredPosts.filter(post => 
+                    post.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    post.excerpt.toLowerCase().includes(currentSearch.toLowerCase())
+                );
+            }
+
+            if (filteredPosts.length === 0) {
+                postsGrid.style.display = 'none';
+                noPosts.style.display = 'block';
+                return;
+            }
+
+            postsGrid.style.display = 'grid';
+            noPosts.style.display = 'none';
+
+            postsGrid.innerHTML = filteredPosts.map(post => `
+                <article class="post-card category-${post.category}" data-category="${post.category}">
+                    <div class="post-image">
+                        ${post.icon}
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">${getCategoryName(post.category)}</span>
+                        <h2 class="post-title">${post.title}</h2>
+                        <p class="post-excerpt">${post.excerpt}</p>
+                        <div class="post-meta">
+                            <span class="post-date">
+                                📅 ${formatDate(post.date)}
+                            </span>
+                            <span class="read-time">
+                                ⏱️ ${post.readTime}
+                            </span>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function getCategoryName(category) {
+            const categoryNames = {
+                'ai': 'AI',
+                'game': '게임 제작',
+                'web': '웹 개발',
+                'mobile': '모바일',
+                'etc': '기타'
+            };
+            return categoryNames[category] || category;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // 카테고리 버튼 이벤트
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 기존 active 제거
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                // 새로운 active 추가
+                btn.classList.add('active');
+                
+                currentCategory = btn.dataset.category;
+                renderPosts();
+            });
+        });
+
+        // 검색 기능
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderPosts();
+        });
+
+        // 포스트 클릭 이벤트 (실제 구현에서는 실제 링크로 연결)
+        document.addEventListener('click', (e) => {
+            const postCard = e.target.closest('.post-card');
+            if (postCard) {
+                // 여기에 실제 포스트 페이지로의 네비게이션 로직 추가
+                console.log('포스트 클릭됨:', postCard.querySelector('.post-title').textContent);
+            }
+        });
+
+        // 초기 렌더링
+        renderPosts();
+    </script>
+</body>
+</html>
